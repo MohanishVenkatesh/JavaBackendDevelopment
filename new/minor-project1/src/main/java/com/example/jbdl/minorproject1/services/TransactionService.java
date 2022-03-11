@@ -42,12 +42,12 @@ public class TransactionService {
 
     public String createTransaction(Request request) throws Exception {
 
-            Transcation transcation = Transcation.builder()
-                    .externalTransactionId(UUID.randomUUID().toString())
-                    .request(request)
-                    .transactionStatus(TransactionStatus.PENDING)
-                    .fine(calculateFine(request))
-                    .build();
+        Transcation transcation = Transcation.builder()
+                .externalTransactionId(UUID.randomUUID().toString())
+                .request(request)
+                .transactionStatus(TransactionStatus.PENDING)
+                .fine(calculateFine(request))
+                .build();
 
 
         try {
@@ -68,8 +68,7 @@ public class TransactionService {
             }
             savedTransaction.setTransactionStatus(TransactionStatus.SUCCESSFUL);
             transactionRepository.save(savedTransaction);
-        }catch (Exception exception)
-        {
+        } catch (Exception exception) {
             transcation.setTransactionStatus(TransactionStatus.FAILED);
             transactionRepository.save(transcation);
 
@@ -77,11 +76,9 @@ public class TransactionService {
         return transcation.getExternalTransactionId();
 
 
-
     }
 
-    private void issueBook(Request request)
-    {
+    private void issueBook(Request request) {
         //Assigning the book to student
 
         Book requestedBook = request.getBook();
@@ -91,8 +88,8 @@ public class TransactionService {
         bookService.saveOrUpdateBook(requestedBook);
 
     }
-    private void returnBook(Request request)
-    {
+
+    private void returnBook(Request request) {
         Book requestedBook = request.getBook();
         requestedBook.setStudent(null);
         bookService.saveOrUpdateBook(requestedBook);
@@ -107,21 +104,18 @@ public class TransactionService {
                 request.getBook().getId(), TransactionStatus.SUCCESSFUL);
 
         Transcation txn = transcationList.get(0);
-        if (txn.getRequest().getRequestType() != RequestType.ISSUE)
-        {
-            throw new Exception("Last Transaction is not return ") ;
+        if (txn.getRequest().getRequestType() != RequestType.ISSUE) {
+            throw new Exception("Last Transaction is not return ");
         }
-            long timeOfIssueInMillis = txn.getTransactionDate().getTime();
-            long timeDiff = System.currentTimeMillis() - timeOfIssueInMillis;
-            // convert the timediff which is in Milliseconds to DAYS. and store it in noOfDaysPassed
-            long noOfDaysPassed = TimeUnit.DAYS.convert(timeDiff,TimeUnit.MILLISECONDS);
-            double fine = 0.0;
-            if(noOfDaysPassed>allottedDays)
-            {
-                fine += (noOfDaysPassed-allottedDays) * finePerDay;
+        long timeOfIssueInMillis = txn.getTransactionDate().getTime();
+        long timeDiff = System.currentTimeMillis() - timeOfIssueInMillis;
+        // convert the timediff which is in Milliseconds to DAYS. and store it in noOfDaysPassed
+        long noOfDaysPassed = TimeUnit.DAYS.convert(timeDiff, TimeUnit.MILLISECONDS);
+        double fine = 0.0;
+        if (noOfDaysPassed > allottedDays) {
+            fine += (noOfDaysPassed - allottedDays) * finePerDay;
 
-            }
-
+        }
 
 
         // find the book issue last time successfully
