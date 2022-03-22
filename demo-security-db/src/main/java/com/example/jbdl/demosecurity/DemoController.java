@@ -21,16 +21,16 @@ public class DemoController {
     public String sayHelloToStudent()
     {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User)authentication.getPrincipal();
-        return "Hello user!!" + user.getUsername();
+        MyUser myUser= (MyUser) authentication.getPrincipal();
+        return "Hello user!!" + myUser.getUsername();
     }
     // This can be accessed by only those people who have Admin authority
     @GetMapping("/admin/hello")
     public String sayHellotoAdmin()
     {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        User user = (User)authentication.getPrincipal();
-        return "Hello admin!!" + user.getUsername();
+        MyUser myUser = (MyUser) authentication.getPrincipal();
+        return "Hello admin!!" + myUser.getUsername();
     }
     //Both student and admin should be able to access this API
     @GetMapping("/student/attendance")

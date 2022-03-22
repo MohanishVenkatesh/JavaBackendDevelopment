@@ -1,5 +1,7 @@
 package com.example.jbdl.demosecurity;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,17 +14,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @Configuration
 public class DemoConfig extends WebSecurityConfigurerAdapter {
 
+
+    @Autowired
+    MyUserService myUserService;
+
+    @Value("${ADMIN_AUTHORITY}")
+    private String ADMIN_AUTHORITY ;
+
+    @Value("${STUDENT_ATTENDANCE_AUTHORITY}")
+    private String STUDENT_ATTENDANCE_AUTHORITY;
+
+    @Value("${STUDENT_ONLY_AUTHORITY}")
+    private String STUDENT_ONLY_AUTHORITY;
+
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        //we can define how we want to authenticate
-        auth.inMemoryAuthentication()
-                .withUser("sagar")
-                .password("$2a$10$8LDiMbojXN2GLjlG2ASQjO988wCmrkjwer4rlaMzO7xbwGPNUbQ6m") //sagar123
-                .authorities("admin")
-                .and()
-                .withUser("priyank")
-                .password("$2a$10$0YoOZ9A.rcijRuS7LOg4aelSwl7hjdDcIBjuGOuw6QeFhSc9kg5Xy")//mohanish123
-                .authorities("student");
+        // we can define how we want to authenticate
+        auth.userDetailsService(myUserService);
     }
 
     @Override
@@ -30,9 +39,9 @@ public class DemoConfig extends WebSecurityConfigurerAdapter {
         http.httpBasic()
                 .and()
                 .authorizeHttpRequests()
-                .antMatchers("/admin/**").hasAuthority("admin")
-                .antMatchers(HttpMethod.GET, "/student/attendance").hasAnyAuthority("student", "admin")
-                .antMatchers("/student/**").hasAuthority("student")
+                .antMatchers("/admin/**").hasAuthority(ADMIN_AUTHORITY)
+                .antMatchers(HttpMethod.GET, "/student/attendance").hasAuthority(STUDENT_ATTENDANCE_AUTHORITY)
+                .antMatchers("/student/**").hasAuthority(STUDENT_ONLY_AUTHORITY)
                 .antMatchers("/**").permitAll()
                 .and()
                 .formLogin();
