@@ -15,7 +15,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 
-public class    Admin {
+public class Admin {
     @Id
     @SequenceGenerator(name = "AdminSequence", sequenceName = "AdminSequence", allocationSize = 1, initialValue = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "AdminSequence")

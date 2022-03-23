@@ -11,7 +11,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import java.util.List;
 
 @SpringBootApplication
-public class MinorProject1Application implements CommandLineRunner {
+public class MinorProject1Application {
 
 	@Autowired
 	TransactionRepository transactionRepository;
@@ -20,10 +20,5 @@ public class MinorProject1Application implements CommandLineRunner {
 		SpringApplication.run(MinorProject1Application.class, args);
 	}
 
-	@Override
-	public void run(String... args) throws Exception {
-//		List<Transcation> transcationList = transactionRepository.findTranscationByRequest_Book_IdAndTransactionStatusOrderByTransactionDateDesc(
-//				3,TransactionStatus.SUCCESSFUL);
 
-		}
 }
